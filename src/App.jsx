@@ -15,6 +15,7 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [formState, setFormState] = useState(defaultFormState());
+  const [notification, setNotification] = useState({ type: '', message: '' });
 
   useEffect(() => {
     blogService.getAll().then((blogsData) => setBlogs(blogsData));
@@ -29,6 +30,14 @@ const App = () => {
     }
   }, []);
 
+  const handleNotification = (type, message) => {
+    console.log('message : ', message);
+    setNotification({ type, message });
+    setTimeout(() => {
+      setFormState({ type: '', message: '' });
+    }, 5000);
+  };
+
   const handleLogin = async (event) => {
     event.preventDefault();
 
@@ -36,13 +45,15 @@ const App = () => {
       const userData = await loginService.login({
         username, password,
       });
+      const successMessage = 'Success! You are now logged in.';
+      handleNotification('success', successMessage);
       window.localStorage.setItem('loggedNoteappUser', JSON.stringify(userData));
       blogService.setToken(userData.token);
       setUser(userData);
       setUsername('');
       setPassword('');
     } catch (error) {
-      throw new Error(error);
+      handleNotification('error', error.message);
     }
   };
 
@@ -51,12 +62,17 @@ const App = () => {
     setUser(null);
   };
 
-  const handleBlogCreation = (e) => {
+  const handleBlogCreation = async (e) => {
     e.preventDefault();
-    blogService.create(formState)
-      .then(() => {
-        blogService.getAll().then((blogsData) => setBlogs(blogsData));
-      });
+    try {
+      await blogService.create(formState);
+      const successMessage = `A new blog ${formState.title} is now created by ${formState.title}`;
+      handleNotification('success', successMessage);
+      const blogsData = await blogService.getAll();
+      setBlogs(blogsData);
+    } catch (error) {
+      handleNotification('error', error.message);
+    }
   };
 
   const handleFormFieldChange = (name, value) => {
@@ -136,9 +152,41 @@ const App = () => {
 
   const isUserLoggedIn = !!(user);
 
+  console.log('notification : ', notification);
+
   return (
     <div>
       <h2>blogs</h2>
+
+      {notification.message && (
+        <p
+          style={notification.type === 'error'
+            ? {
+              color: 'red',
+              border: '4px solid red',
+              backgroundColor: 'lightgray',
+              height: 40,
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: 16,
+              fontWeight: 500,
+              fontSize: 24,
+            }
+            : {
+              color: 'green',
+              border: '2px dashed green',
+              backgroundColor: 'lightgray',
+              height: 40,
+              display: 'flex',
+              alignItems: 'center',
+              paddingLeft: 16,
+              fontWeight: 500,
+              fontSize: 24,
+            }}
+        >
+          {notification.message}
+        </p>
+      )}
 
       {!isUserLoggedIn && loginForm()}
 
