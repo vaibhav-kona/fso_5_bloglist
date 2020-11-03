@@ -7,7 +7,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState('');
+  const [user, setUser] = useState({});
 
   useEffect(() => {
     blogService.getAll().then((blogsData) => setBlogs(blogsData));
@@ -43,6 +43,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.clear();
+    setUser({});
   };
 
   const loginForm = () => (
@@ -86,7 +87,7 @@ const App = () => {
       {isUserLoggedIn && (
         <>
           <p>
-            {`${user.name} is now logged in.`}
+            {`${user.name || user.username} is now logged in.`}
             <button onClick={handleLogout} type="button">Logout</button>
           </p>
           {blogsUI()}
