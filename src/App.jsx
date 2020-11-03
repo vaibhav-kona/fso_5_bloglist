@@ -7,7 +7,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogsData) => setBlogs(blogsData));
@@ -29,7 +29,7 @@ const App = () => {
       const userData = await loginService.login({
         username, password,
       });
-      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user));
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(userData));
       blogService.setToken(userData.token);
       setUser(userData);
       setUsername('');
@@ -43,7 +43,7 @@ const App = () => {
 
   const handleLogout = () => {
     window.localStorage.clear();
-    setUser({});
+    setUser(null);
   };
 
   const loginForm = () => (
@@ -76,7 +76,7 @@ const App = () => {
     </>
   );
 
-  const isUserLoggedIn = user && user !== null;
+  const isUserLoggedIn = !!(user);
 
   return (
     <div>
