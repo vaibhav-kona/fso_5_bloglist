@@ -1,11 +1,21 @@
 import React, { useState } from 'react';
+import blogsService from '../services/blogs';
 
 const Blog = ({ blog }) => {
   const [showBlogDetails, setshowBlogDetails] = useState(false);
+  const [blogDetails, setBlogDetails] = useState(blog);
+  const [isUpdating, setisUpdating] = useState(false);
+
+  const likeBlog = async () => {
+    setisUpdating(true);
+    const responseData = await blogsService.likeBlog(blogDetails);
+    setBlogDetails(responseData);
+    setisUpdating(false);
+  };
 
   return (
     <div style={{ margin: 16, border: '2px solid green', padding: 8 }}>
-      {blog.title}
+      {blogDetails.title}
       {' '}
       <button onClick={() => setshowBlogDetails(!showBlogDetails)} type="button">
         {showBlogDetails ? 'Hide' : 'Show'}
@@ -14,16 +24,16 @@ const Blog = ({ blog }) => {
       {showBlogDetails && (
         <>
           <p>
-            {blog.url}
+            {blogDetails.url}
           </p>
           <p>
-            {blog.likes}
+            {blogDetails.likes}
             {' '}
             {' '}
-            <button onClick={() => null} type="button">Like</button>
+            <button disabled={isUpdating} onClick={likeBlog} type="button">Like</button>
           </p>
           <p>
-            {blog.author}
+            {blogDetails.author}
           </p>
         </>
       )}
