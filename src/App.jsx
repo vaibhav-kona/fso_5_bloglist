@@ -16,6 +16,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [formState, setFormState] = useState(defaultFormState());
   const [notification, setNotification] = useState({ type: '', message: '' });
+  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogsData) => setBlogs(blogsData));
@@ -70,6 +71,7 @@ const App = () => {
       handleNotification('success', successMessage);
       const blogsData = await blogService.getAll();
       setBlogs(blogsData);
+      setShowCreateForm(false);
     } catch (error) {
       handleNotification('error', error.message);
     }
@@ -113,46 +115,60 @@ const App = () => {
 
   const newBlogForm = () => (
     <>
-      <form onSubmit={handleBlogCreation}>
-        <label htmlFor="title">
-          title:
-          <input
-            id="title"
-            name="title"
-            required
-            value={formState.title}
-            onChange={(e) => handleFormFieldChange('title', e.target.value)}
-          />
-        </label>
-        <label htmlFor="author">
-          author:
-          <input
-            id="author"
-            name="author"
-            required
-            value={formState.author}
-            onChange={(e) => handleFormFieldChange('author', e.target.value)}
-          />
-        </label>
-        <label htmlFor="url">
-          url:
-          <input
-            id="url"
-            name="url"
-            required
-            value={formState.url}
-            onChange={(e) => handleFormFieldChange('url', e.target.value)}
-          />
-        </label>
+      <button
+        type="button"
+        onClick={() => setShowCreateForm(true)}
+        style={{ display: showCreateForm ? 'none' : '' }}
+      >
+        Create New Blog
+      </button>
+      {showCreateForm && (
+        <form onSubmit={handleBlogCreation}>
+          <label htmlFor="title">
+            title:
+            <input
+              id="title"
+              name="title"
+              required
+              value={formState.title}
+              onChange={(e) => handleFormFieldChange('title', e.target.value)}
+            />
+          </label>
+          <label htmlFor="author">
+            author:
+            <input
+              id="author"
+              name="author"
+              required
+              value={formState.author}
+              onChange={(e) => handleFormFieldChange('author', e.target.value)}
+            />
+          </label>
+          <label htmlFor="url">
+            url:
+            <input
+              id="url"
+              name="url"
+              required
+              value={formState.url}
+              onChange={(e) => handleFormFieldChange('url', e.target.value)}
+            />
+          </label>
 
-        <button type="submit">Save</button>
-      </form>
+          <button type="submit">Save</button>
+        </form>
+      )}
+      <button
+        type="button"
+        onClick={() => setShowCreateForm(false)}
+        style={{ display: showCreateForm ? '' : 'none' }}
+      >
+        Cancel
+      </button>
     </>
   );
 
   const isUserLoggedIn = !!(user);
-
-  console.log('notification : ', notification);
 
   return (
     <div>
@@ -196,7 +212,9 @@ const App = () => {
             {`${user.name || user.username} is now logged in.`}
             <button onClick={handleLogout} type="button">Logout</button>
           </p>
+
           {newBlogForm()}
+
           {blogsUI()}
         </>
       )}
