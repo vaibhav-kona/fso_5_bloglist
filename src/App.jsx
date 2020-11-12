@@ -1,22 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import BlogForm from './BlogForm';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 import loginService from './services/login';
 
 const App = () => {
-  const defaultFormState = () => ({
-    title: '',
-    author: '',
-    url: '',
-  });
-
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [formState, setFormState] = useState(defaultFormState());
   const [notification, setNotification] = useState({ type: '', message: '' });
-  const [showCreateForm, setShowCreateForm] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then((blogsData) => setBlogs(blogsData));
@@ -32,10 +25,9 @@ const App = () => {
   }, []);
 
   const handleNotification = (type, message) => {
-    console.log('message : ', message);
     setNotification({ type, message });
     setTimeout(() => {
-      setFormState({ type: '', message: '' });
+      setNotification({ type: '', message: '' });
     }, 5000);
   };
 
@@ -63,11 +55,11 @@ const App = () => {
     setUser(null);
   };
 
-  const handleBlogCreation = async (e) => {
+  const handleBlogCreation = async (e, formData, setShowCreateForm) => {
     e.preventDefault();
     try {
-      await blogService.create(formState);
-      const successMessage = `A new blog ${formState.title} is now created by ${formState.title}`;
+      await blogService.create(formData);
+      const successMessage = `A new blog ${formData.title} is now created by ${formData.author}`;
       handleNotification('success', successMessage);
       const blogsData = await blogService.getAll();
       setBlogs(blogsData);
@@ -75,12 +67,6 @@ const App = () => {
     } catch (error) {
       handleNotification('error', error.message);
     }
-  };
-
-  const handleFormFieldChange = (name, value) => {
-    const formStateCopy = { ...formState };
-    formStateCopy[name] = value;
-    setFormState(formStateCopy);
   };
 
   const loginForm = () => (
@@ -110,61 +96,6 @@ const App = () => {
   const blogsUI = () => (
     <>
       {blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
-    </>
-  );
-
-  const newBlogForm = () => (
-    <>
-      <button
-        type="button"
-        onClick={() => setShowCreateForm(true)}
-        style={{ display: showCreateForm ? 'none' : '' }}
-      >
-        Create New Blog
-      </button>
-      {showCreateForm && (
-        <form onSubmit={handleBlogCreation}>
-          <label htmlFor="title">
-            title:
-            <input
-              id="title"
-              name="title"
-              required
-              value={formState.title}
-              onChange={(e) => handleFormFieldChange('title', e.target.value)}
-            />
-          </label>
-          <label htmlFor="author">
-            author:
-            <input
-              id="author"
-              name="author"
-              required
-              value={formState.author}
-              onChange={(e) => handleFormFieldChange('author', e.target.value)}
-            />
-          </label>
-          <label htmlFor="url">
-            url:
-            <input
-              id="url"
-              name="url"
-              required
-              value={formState.url}
-              onChange={(e) => handleFormFieldChange('url', e.target.value)}
-            />
-          </label>
-
-          <button type="submit">Save</button>
-        </form>
-      )}
-      <button
-        type="button"
-        onClick={() => setShowCreateForm(false)}
-        style={{ display: showCreateForm ? '' : 'none' }}
-      >
-        Cancel
-      </button>
     </>
   );
 
@@ -213,7 +144,7 @@ const App = () => {
             <button onClick={handleLogout} type="button">Logout</button>
           </p>
 
-          {newBlogForm()}
+          <BlogForm handleBlogCreation={handleBlogCreation} />
 
           {blogsUI()}
         </>
