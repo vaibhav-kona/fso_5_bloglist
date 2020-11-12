@@ -95,7 +95,9 @@ const App = () => {
 
   const blogsUI = () => (
     <>
-      {blogs.map((blog) => <Blog key={blog.id} blog={blog} />)}
+      {blogs
+        .sort((blog1, blog2) => blog1.likes < blog2.likes)
+        .map((blog) => <Blog key={blog.id} blog={blog} />)}
     </>
   );
 
