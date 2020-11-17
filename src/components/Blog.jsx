@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import blogsService from '../services/blogs';
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, setBlogs, setNotification }) => {
   const [showBlogDetails, setshowBlogDetails] = useState(false);
   const [blogDetails, setBlogDetails] = useState(blog);
   const [isUpdating, setisUpdating] = useState(false);
@@ -10,6 +10,19 @@ const Blog = ({ blog }) => {
     setisUpdating(true);
     const responseData = await blogsService.likeBlog(blogDetails);
     setBlogDetails(responseData);
+    setisUpdating(false);
+  };
+
+  const deleteBlog = async () => {
+    setisUpdating(true);
+    try {
+      await blogsService.deleteBlog(blogDetails.id);
+      const blogsData = await blogsService.getAll();
+      setBlogs(blogsData);
+      setNotification({ type: 'success', message: 'Blog is now deleted!' });
+    } catch (error) {
+      setNotification({ type: 'error', message: error.message });
+    }
     setisUpdating(false);
   };
 
@@ -35,6 +48,12 @@ const Blog = ({ blog }) => {
           <p>
             {blogDetails.author}
           </p>
+          <button
+            onClick={() => deleteBlog(blogDetails.id)}
+            type="button"
+          >
+            Remove
+          </button>
         </>
       )}
     </div>
