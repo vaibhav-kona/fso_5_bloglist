@@ -14,16 +14,19 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
   };
 
   const deleteBlog = async () => {
-    setisUpdating(true);
-    try {
-      await blogsService.deleteBlog(blogDetails.id);
-      const blogsData = await blogsService.getAll();
-      setBlogs(blogsData);
-      setNotification({ type: 'success', message: 'Blog is now deleted!' });
-    } catch (error) {
-      setNotification({ type: 'error', message: error.message });
+    const isConfirmed = window.confirm('Are you sure you want to delete this blog?');
+    if (isConfirmed) {
+      setisUpdating(true);
+      try {
+        await blogsService.deleteBlog(blogDetails.id);
+        const blogsData = await blogsService.getAll();
+        setBlogs(blogsData);
+        setNotification({ type: 'success', message: 'Blog is now deleted!' });
+      } catch (error) {
+        setNotification({ type: 'error', message: error.message });
+      }
+      setisUpdating(false);
     }
-    setisUpdating(false);
   };
 
   return (
