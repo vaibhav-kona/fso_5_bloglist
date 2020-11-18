@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { shape, func } from 'prop-types';
 import blogsService from '../services/blogs';
 
 const Blog = ({ blog, setBlogs, setNotification }) => {
@@ -61,6 +62,13 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
       )}
     </div>
   );
+};
+
+// eslint-disable-next-line react/no-typos
+Blog.propTypes = {
+  blog: shape({}).isRequired,
+  setBlogs: func.isRequired,
+  setNotification: func.isRequired,
 };
 
 export default Blog;
