@@ -53,7 +53,13 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
             {blogDetails.likes}
             {' '}
             {' '}
-            <button disabled={isUpdating} onClick={likeBlog} type="button">Like</button>
+            <button
+              disabled={isUpdating}
+              onClick={likeBlog}
+              type="button"
+            >
+              Like
+            </button>
           </p>
           <button
             onClick={() => deleteBlog(blogDetails.id)}

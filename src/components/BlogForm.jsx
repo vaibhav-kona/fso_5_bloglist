@@ -1,3 +1,4 @@
+import { func } from 'prop-types';
 import React, { useState } from 'react';
 
 const BlogForm = ({ handleBlogCreation }) => {
@@ -19,6 +20,7 @@ const BlogForm = ({ handleBlogCreation }) => {
   return (
     <>
       <button
+        id="showCreateForm"
         type="button"
         onClick={() => setShowCreateForm(true)}
         style={{ display: showCreateForm ? 'none' : '' }}
@@ -58,7 +60,7 @@ const BlogForm = ({ handleBlogCreation }) => {
             />
           </label>
 
-          <button type="submit">Save</button>
+          <button id="submitBlogForm" type="submit">Save</button>
         </form>
       )}
       <button
@@ -70,6 +72,10 @@ const BlogForm = ({ handleBlogCreation }) => {
       </button>
     </>
   );
+};
+
+BlogForm.propTypes = {
+  handleBlogCreation: func.isRequired,
 };
 
 export default BlogForm;
