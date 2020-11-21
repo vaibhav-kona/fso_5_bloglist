@@ -32,25 +32,28 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
 
   return (
     <div style={{ margin: 16, border: '2px solid green', padding: 8 }}>
-      {blogDetails.title}
+      <span id="blogTitle">{blogDetails.title}</span>
+      {' by '}
+      <span id="blogAuthor">{blogDetails.author}</span>
       {' '}
-      <button onClick={() => setshowBlogDetails(!showBlogDetails)} type="button">
+      <button
+        id="showBlogDetails"
+        onClick={() => setshowBlogDetails(!showBlogDetails)}
+        type="button"
+      >
         {showBlogDetails ? 'Hide' : 'Show'}
       </button>
 
       {showBlogDetails && (
-        <>
-          <p>
+        <div id="blogDetails">
+          <p id="blogUrl">
             {blogDetails.url}
           </p>
-          <p>
+          <p id="blogLikes">
             {blogDetails.likes}
             {' '}
             {' '}
             <button disabled={isUpdating} onClick={likeBlog} type="button">Like</button>
-          </p>
-          <p>
-            {blogDetails.author}
           </p>
           <button
             onClick={() => deleteBlog(blogDetails.id)}
@@ -58,7 +61,7 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
           >
             Remove
           </button>
-        </>
+        </div>
       )}
     </div>
   );
