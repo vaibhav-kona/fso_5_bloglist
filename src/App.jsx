@@ -70,10 +70,11 @@ const App = () => {
   };
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleLogin} data-cy="login-form">
       <div>
         username
         <input
+          data-cy="login-form-username"
           type="text"
           value={username}
           name="Username"
@@ -83,13 +84,14 @@ const App = () => {
       <div>
         password
         <input
+          data-cy="login-form-password"
           type="password"
           value={password}
           name="Password"
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button type="submit">login</button>
+      <button data-cy="login-form-submit-button" type="submit">login</button>
     </form>
   );
 
@@ -116,6 +118,7 @@ const App = () => {
 
       {notification.message && (
         <p
+          data-cy="notification-message"
           style={notification.type === 'error'
             ? {
               color: 'red',
