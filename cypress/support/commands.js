@@ -27,5 +27,22 @@
 Cypress.Commands.add('login', (username, password) => {
   cy.get('[data-cy=login-form-username]').type(username);
   cy.get('[data-cy=login-form-password]').type(password);
+
   cy.get('[data-cy=login-form-submit-button]').click();
+});
+
+Cypress.Commands.add('createBlog', (title, author, url) => {
+  // data-cy="blog-form-title"
+  cy.get('[data-cy=blog-form-title]').type(title);
+  cy.get('[data-cy=blog-form-author]').type(author);
+  cy.get('[data-cy=blog-form-url]').type(url);
+
+  cy.get('[data-cy=blog-form-submit-button]').click();
+});
+
+Cypress.Commands.add('getBlogs', (cb) => {
+  cy.request('http://localhost:3002/api/blogs').as('getBlogs');
+  cy.get('@getBlogs').should((response) => {
+    cb(response);
+  });
 });

@@ -32,7 +32,7 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
 
   return (
     <div style={{ margin: 16, border: '2px solid green', padding: 8 }}>
-      <span id="blogTitle">{blogDetails.title}</span>
+      <span data-cy={blogDetails.title} id="blogTitle">{blogDetails.title}</span>
       {' by '}
       <span id="blogAuthor">{blogDetails.author}</span>
       {' '}

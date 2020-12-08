@@ -20,6 +20,7 @@ const BlogForm = ({ handleBlogCreation }) => {
   return (
     <>
       <button
+        data-cy="create-new-blog"
         id="showCreateForm"
         type="button"
         onClick={() => setShowCreateForm(true)}
@@ -32,6 +33,7 @@ const BlogForm = ({ handleBlogCreation }) => {
           <label htmlFor="title">
             title:
             <input
+              data-cy="blog-form-title"
               id="title"
               name="title"
               required
@@ -42,6 +44,7 @@ const BlogForm = ({ handleBlogCreation }) => {
           <label htmlFor="author">
             author:
             <input
+              data-cy="blog-form-author"
               id="author"
               name="author"
               required
@@ -52,6 +55,7 @@ const BlogForm = ({ handleBlogCreation }) => {
           <label htmlFor="url">
             url:
             <input
+              data-cy="blog-form-url"
               id="url"
               name="url"
               required
@@ -60,7 +64,7 @@ const BlogForm = ({ handleBlogCreation }) => {
             />
           </label>
 
-          <button id="submitBlogForm" type="submit">Save</button>
+          <button data-cy="blog-form-submit-button" id="submitBlogForm" type="submit">Save</button>
         </form>
       )}
       <button

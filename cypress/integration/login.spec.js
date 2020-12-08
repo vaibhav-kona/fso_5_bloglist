@@ -30,4 +30,33 @@ describe('Blog app', () => {
       });
     });
   });
+
+  describe.only('When logged in', () => {
+    beforeEach(() => {
+      cy.server();
+      cy.route('POST', '*api/login').as('loginUser');
+
+      cy.login('root', 'helloworld');
+      cy.wait('@loginUser').should((xhr) => {
+        expect(xhr.status).to.equal(200);
+      });
+    });
+
+    it('A blog can be created', () => {
+      // Test if user can create a new blog
+      cy.server();
+      cy.route('POST', '*api/blogs').as('createBlog');
+
+      // Fill blog data
+      cy.get('[data-cy=create-new-blog]').click();
+      cy.createBlog('abcd', 'abcd', '/abcd');
+
+      cy.wait('@createBlog').should((xhr) => {
+        expect(xhr.status).to.equal(201);
+        cy.get('[data-cy=abcd').should('exist');
+      });
+
+      // Ensure new blog is added to the list
+    });
+  });
 });
