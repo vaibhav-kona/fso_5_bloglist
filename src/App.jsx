@@ -153,7 +153,14 @@ const App = () => {
         <>
           <p>
             {`${user.name || user.username} is now logged in.`}
-            <button onClick={handleLogout} type="button">Logout</button>
+            <button
+              data-cy="logout-button"
+              onClick={handleLogout}
+              type="button"
+            >
+              Logout
+
+            </button>
           </p>
 
           <BlogForm handleBlogCreation={handleBlogCreation} />

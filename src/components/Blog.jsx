@@ -64,6 +64,7 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
             </button>
           </p>
           <button
+            data-cy="delete-blog"
             onClick={() => deleteBlog(blogDetails.id)}
             type="button"
           >

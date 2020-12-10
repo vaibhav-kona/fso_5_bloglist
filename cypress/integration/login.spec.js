@@ -3,6 +3,8 @@ describe('Blog app', () => {
     cy.request('POST', 'http://localhost:3002/api/testing/reset');
     cy.request('POST', 'http://localhost:3002/api/users',
       { username: 'root', password: 'helloworld' });
+    cy.request('POST', 'http://localhost:3002/api/users',
+      { username: 'abcd8294', password: 'helloworld8294' });
     cy.visit('http://localhost:3004');
   });
 
@@ -47,6 +49,7 @@ describe('Blog app', () => {
       cy.server();
       cy.route('POST', '*api/blogs').as('createBlog');
       cy.route('PUT', '*api/blogs/*').as('updateBlog');
+      cy.route('DELETE', '*api/blogs/*').as('deleteBlog');
 
       // Create new blog
       cy.get('[data-cy=create-new-blog]').click();
@@ -64,6 +67,34 @@ describe('Blog app', () => {
       cy.wait('@updateBlog').should((xhr) => {
         expect(xhr.status).to.equal(200);
         cy.get('[data-cy=blog-likes]').contains('1');
+      });
+
+      // Ensure other users than who added can't delete the blog
+
+      // Logout user
+      cy.get('[data-cy=logout-button]').click();
+
+      // Login with non author
+      cy.login('abcd8294', 'helloworld8294');
+
+      // Try to delete and expect 403
+      cy.get('[data-cy=show-blog-details]').click();
+      cy.get('[data-cy=delete-blog]').click();
+      cy.wait('@deleteBlog').should((xhr) => {
+        expect(xhr.status).to.equal(403);
+      });
+
+      // Ensure user who added the blog can delete it
+
+      // Logout user
+      cy.get('[data-cy=logout-button]').click();
+
+      // Login with non author
+      cy.login('root', 'helloworld');
+      cy.get('[data-cy=show-blog-details]').click();
+      cy.get('[data-cy=delete-blog]').click();
+      cy.wait('@deleteBlog').should((xhr) => {
+        expect(xhr.status).to.equal(200);
       });
     });
   });
