@@ -46,17 +46,25 @@ describe('Blog app', () => {
       // Test if user can create a new blog
       cy.server();
       cy.route('POST', '*api/blogs').as('createBlog');
+      cy.route('PUT', '*api/blogs/*').as('updateBlog');
 
-      // Fill blog data
+      // Create new blog
       cy.get('[data-cy=create-new-blog]').click();
       cy.createBlog('abcd', 'abcd', '/abcd');
 
+      // Ensure new blog is added to the list
       cy.wait('@createBlog').should((xhr) => {
         expect(xhr.status).to.equal(201);
         cy.get('[data-cy=abcd').should('exist');
       });
 
-      // Ensure new blog is added to the list
+      // Ensure that user can like the blog
+      cy.get('[data-cy=show-blog-details]').click();
+      cy.get('[data-cy=like-button]').click();
+      cy.wait('@updateBlog').should((xhr) => {
+        expect(xhr.status).to.equal(200);
+        cy.get('[data-cy=blog-likes]').contains('1');
+      });
     });
   });
 });

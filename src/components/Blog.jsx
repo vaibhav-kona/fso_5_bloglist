@@ -37,6 +37,7 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
       <span id="blogAuthor">{blogDetails.author}</span>
       {' '}
       <button
+        data-cy="show-blog-details"
         id="showBlogDetails"
         onClick={() => setshowBlogDetails(!showBlogDetails)}
         type="button"
@@ -50,10 +51,11 @@ const Blog = ({ blog, setBlogs, setNotification }) => {
             {blogDetails.url}
           </p>
           <p id="blogLikes">
-            {blogDetails.likes}
+            <span data-cy="blog-likes">{blogDetails.likes}</span>
             {' '}
             {' '}
             <button
+              data-cy="like-button"
               disabled={isUpdating}
               onClick={likeBlog}
               type="button"
