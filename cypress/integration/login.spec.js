@@ -96,6 +96,49 @@ describe('Blog app', () => {
       cy.wait('@deleteBlog').should((xhr) => {
         expect(xhr.status).to.equal(200);
       });
+
+      // Check if the blogs are coming in sorted order from the backend
+
+      const blogData = [
+        ['a', 'a', '/a'],
+        ['b', 'b', '/b'],
+        ['c', 'c', '/c'],
+      ];
+
+      blogData.forEach((blog) => {
+        cy.get('[data-cy=create-new-blog]').click();
+        cy.createBlog(blog[0], blog[1], blog[2]);
+        cy.wait('@createBlog').should((xhr) => {
+          expect(xhr.status).to.equal(201);
+        });
+      });
+
+      cy.get('[data-cy=show-blog-details]').eq(0).click();
+      cy.get('[data-cy=like-button]').eq(0).click();
+      cy.wait('@updateBlog').should((xhr) => {
+        expect(xhr.status).to.equal(200);
+        cy.get('[data-cy=blog-likes]').contains('1');
+      });
+
+      cy.get('[data-cy=show-blog-details]').eq(1).click();
+      cy.get('[data-cy=like-button]').eq(1).click();
+      cy.wait('@updateBlog').should((xhr) => {
+        expect(xhr.status).to.equal(200);
+        cy.get('[data-cy=blog-likes]').contains('1');
+      });
+
+      cy.request({ url: '/api/blogs', method: 'GET' }).should((response) => {
+        let prevValue = Infinity;
+        let isSorted = true;
+        response.body.forEach((val) => {
+          const currentVal = val.likes;
+          if (currentVal > prevValue) {
+            isSorted = false;
+          }
+          prevValue = currentVal;
+        });
+        expect(isSorted).to.equal(true);
+      });
     });
   });
 });
